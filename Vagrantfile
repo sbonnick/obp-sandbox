@@ -1,13 +1,28 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# handle getting and creating a local .env file
+en = Hash.new
+if not (File.file?(".env"))
+  File.open(".env", 'w') { |file| 
+    file.write("domain=#{`hostname`[0..-2]}\nTZ=America/Toronto\nloglevel=INFO") 
+  }
+end
+File.open(".env").each do |line|
+  spl = line.split('=')
+  en[spl[0].strip] = spl[1].strip
+end
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/bionic64"
+  
+  config.vm.host_name = en['domain']
 
   config.vm.box_check_update = true
-  config.vm.network "forwarded_port", guest: 80, host: 80
-  config.vm.network "forwarded_port", guest: 443, host: 443
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+  config.vm.network "forwarded_port", guest: 8081, host: 8081
+  config.vm.network "forwarded_port", guest: 8082, host: 8082
 
   config.vm.synced_folder ".", "/obp"
   
@@ -30,13 +45,8 @@ Vagrant.configure("2") do |config|
     docker -v
   SHELL
   
-  config.vm.provision "shell", privileged: true, run: 'always', inline: <<-SHELL
+  config.vm.provision "shell", privileged: true, run: 'always', env: en, inline: <<-SHELL
     cd /obp
-    docker-compose up -d
+    docker-compose --log-level ${loglevel} up -d
   SHELL
 end
-
-
-## ensure docker-compose files exists
-## for any envars, put them in .env
-## services default to *.obp.localhost

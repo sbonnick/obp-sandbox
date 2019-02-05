@@ -1,37 +1,6 @@
 version: "3.6"
 
 services:
-
-  traefik:
-    container_name: traefik
-    image: traefik:latest
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: 
-      - --defaultEntryPoints=http,https
-      - "--entryPoints=Name:http Address::80"
-      - "--entryPoints=Name:https Address::443 TLS"
-      - --api
-      - --loglevel=${loglevel}
-      - --docker
-      - --docker.watch
-      - --docker.domain=${domain}
-      - --docker.exposedbydefault=false
-      - --docker.network=proxy
-    environment:
-      - TZ=${TZ}
-    labels: 
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:${domain}"
-      - "traefik.protocol=http"
-      - "traefik.port=8080"
-    networks:
-      - proxy
-  
   obp:
     container_name: obp
     image: openbankproject/obp-full:latest
@@ -41,26 +10,9 @@ services:
      - "8082:8082"
      - "8081:8081"
     environment:
-      OBP_API_HOSTNAME: http://api.${COMPOSE_PROJECT_NAME}.${domain}
-      OBP_BASE_URL_API_EXPLORER: http://explorer.${COMPOSE_PROJECT_NAME}.${domain}
-      OBP_WEBUI_API_EXPLORER_URL: http://explorer.${COMPOSE_PROJECT_NAME}.${domain}
-      OBP_BASE_URL_SOCIAL_FINANCE: http://social.${COMPOSE_PROJECT_NAME}.${domain}
+      OBP_API_HOSTNAME: http://${domain}:8080
+      OBP_BASE_URL_API_EXPLORER: http://${domain}:8082
+      OBP_WEBUI_API_EXPLORER_URL: http://${domain}:8082
+      OBP_BASE_URL_SOCIAL_FINANCE: http://${domain}:8081
       JAVA_TIMEZONE: ${TZ}
-    labels: 
-      - "traefik.enable=true"
-      - "traefik.api.protocol=http"
-      - "traefik.api.port=8080"
-      - "traefik.api.frontend.rule=Host:api.${COMPOSE_PROJECT_NAME}.${domain}"
-      - "traefik.explorer.protocol=http"
-      - "traefik.explorer.port=8082"
-      - "traefik.explorer.frontend.rule=Host:explorer.${COMPOSE_PROJECT_NAME}.${domain}"
-      - "traefik.social.protocol=http"
-      - "traefik.social.port=8081"
-      - "traefik.social.frontend.rule=Host:social.${COMPOSE_PROJECT_NAME}.${domain}"
-    networks:
-      - proxy
-      
-networks:
-  proxy:
-    driver: bridge
-    name: proxy
+    network_mode: "host"
