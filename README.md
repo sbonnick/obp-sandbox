@@ -46,6 +46,20 @@ datafile=example_import.json
 ## Changing default data
 By default, the example_import.json is loaded into the service for hosting. Data in here cna be changed, or a separate data set cna be used by adjusting the .env `datafile` entry.
 
-## Querying transactions
+## Querying transactions for a given bank and account
 
-TODO: add curl example to query all transactions under robert
+Given a test user `robert.xuk.x@example.com`, using the above mentioned password and the API Explorer consumer key, a token can be retrieved using:
+```
+curl -X POST \
+  http://<DOMAIN>:8080/my/logins/direct \
+  -H 'authorization: DirectLogin username=\"robert.xuk.x@example.com\",password=\"5232e7\",consumer_key=\"zmpkpwsa5mpuovsp0ms00c5agwzofwixlypolpet\"' \
+  -H 'content-type: application/json' \
+```
+
+Taking the token retrieved above and assuming the bank `psd201-bank-x--uk` and account `05237266-b334-4704-a087-5b460a2ecf04`, you can query all transactions using:
+```
+curl -X GET \
+  http://<DOMAIN>:8080/obp/v3.1.0/banks/psd201-bank-x--uk/accounts/05237266-b334-4704-a087-5b460a2ecf04/accountant/transactions \
+  -H 'authorization: DirectLogin token=\"<TOKEN FROM PREVIOUS CURL>\"' \
+  -H 'content-type: application/json' \
+```
