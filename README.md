@@ -63,3 +63,21 @@ curl -X GET \
   -H 'authorization: DirectLogin token=\"<TOKEN FROM PREVIOUS CURL>\"' \
   -H 'content-type: application/json' \
 ```
+
+
+# Whats happening under the hood
+
+whats happening... Its networking turtles all the way down!
+
+```
+Host (services exposed locally only)
+  + - Vagrant VM (port forward 8080 - 8082 to host)
+    + - Docker Service (using host networking)
+      + - OBP Container
+        + - API Service (port 8080)
+          + - OAUTH Endpoint ServiceS
+        + - API Explorer Service (port 8082)
+        + - Social Banking Service (port 8081)
+```
+
+Using the hosts domain name is important here when configuring a deployment since the VM will be given the same name. This cheats a little by ensuring all internal and host-internal traffic flows to the correct endpoints.
