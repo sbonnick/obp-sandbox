@@ -10,8 +10,8 @@ vagrant up
 
 These commands will start the services and populate it with some default data. Services will now be accessible at the following URLs using your computer name as the domain:
 ```
-API: http://<domain>:8080
-API Explorer: http://<domain>:8082
+API:            http://<domain>:8080
+API Explorer:   http://<domain>:8082
 Social Banking: http://<domain>:8081
 ```
 
