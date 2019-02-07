@@ -23,6 +23,7 @@ For here, you can either log into the API Explorer using the following credentia
 
 ## NOTES
 - When manually logging into the API Explorer, the OAuth does not always redirect you back to the API Explorer after logging in. If it does not, replace `<localhost>` in the browser URL bar with your correct set domain.
+- Depending on how you are wanting to connect to this service, using your hosts IP instead of the default computer name may be preferred. For example, if connecting from another local VM may not have the correct DNS entry for the host
 
 
 # Advanced Setup
@@ -52,7 +53,7 @@ Given a test user `robert.xuk.x@example.com`, using the above mentioned password
 ```
 curl -X POST \
   http://<DOMAIN>:8080/my/logins/direct \
-  -H 'authorization: DirectLogin username=\"robert.xuk.x@example.com\",password=\"5232e7\",consumer_key=\"zmpkpwsa5mpuovsp0ms00c5agwzofwixlypolpet\"' \
+  -H 'authorization: DirectLogin username="robert.xuk.x@example.com",password="5232e7",consumer_key="zmpkpwsa5mpuovsp0ms00c5agwzofwixlypolpet"' \
   -H 'content-type: application/json' \
 ```
 
@@ -60,7 +61,7 @@ Taking the token retrieved above and assuming the bank `psd201-bank-x--uk` and a
 ```
 curl -X GET \
   http://<DOMAIN>:8080/obp/v3.1.0/banks/psd201-bank-x--uk/accounts/05237266-b334-4704-a087-5b460a2ecf04/accountant/transactions \
-  -H 'authorization: DirectLogin token=\"<TOKEN FROM PREVIOUS CURL>\"' \
+  -H 'authorization: DirectLogin token="<TOKEN FROM PREVIOUS CURL>"' \
   -H 'content-type: application/json' \
 ```
 
